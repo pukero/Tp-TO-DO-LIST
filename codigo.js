@@ -36,11 +36,16 @@ function mostrarLista() {
 
 function toggleCompletado(index) {
     tareas[index].completada = !tareas[index].completada;
-    tareas[index].fechaCompletado = tareas[index].completada ? new Date().toLocaleString() : null;
+
+    if (tareas[index].completada) {
+        tareas[index].fechaCompletado = new Date().toLocaleString();
+    } else {
+        tareas[index].fechaCompletado = null;
+    }
+
     mostrarLista();
 }
 
 function ocultarLista() {
     document.getElementById("Lista").innerHTML = "";
 }
-

@@ -7,10 +7,16 @@ function agregarIngresado() {
     let timestamp = Date.now();
     let fecha = new Date(timestamp).toLocaleString();
 
-    tareas.push({ texto: tareaTexto, completada: false, fechaCreacion: fecha, fechaCompletado: null });
+    tareas.push({ 
+        texto: tareaTexto, 
+        completada: false, 
+        fechaCreacion: fecha, 
+        timestampCreacion: timestamp, 
+        fechaCompletado: null, 
+        timestampCompletado: null 
+    });
 
     document.getElementById("tarea").value = "";
-
     mostrarLista();
 }
 
@@ -38,8 +44,10 @@ function toggleCompletado(index) {
     tareas[index].completada = !tareas[index].completada;
 
     if (tareas[index].completada) {
-        tareas[index].fechaCompletado = new Date().toLocaleString();
+        tareas[index].timestampCompletado = Date.now();
+        tareas[index].fechaCompletado = new Date(tareas[index].timestampCompletado).toLocaleString();
     } else {
+        tareas[index].timestampCompletado = null;
         tareas[index].fechaCompletado = null;
     }
 
@@ -48,4 +56,27 @@ function toggleCompletado(index) {
 
 function ocultarLista() {
     document.getElementById("Lista").innerHTML = "";
+}
+
+function mostrarTareaMasRapida() {
+    let tareaMasRapida = null;
+    let menorTiempo = Infinity;
+
+    tareas.forEach(tarea => {
+        if (tarea.completada && tarea.timestampCompletado && tarea.timestampCreacion) {
+            let tiempo = tarea.timestampCompletado - tarea.timestampCreacion;
+            if (tiempo < menorTiempo) {
+                menorTiempo = tiempo;
+                tareaMasRapida = tarea;
+            }
+        }
+    });
+
+    let resultado = document.getElementById("resultadoRapido");
+
+    if (tareaMasRapida) {
+        resultado.innerText = `La tarea más rápida fue "${tareaMasRapida.texto}", completada en ${(menorTiempo / 1000).toFixed(2)} segundos.`;
+    } else {
+        resultado.innerText = "Todavía no se completó ninguna tarea.";
+    }
 }
